@@ -50,4 +50,10 @@ dependencies {
 
     implementation "com.google.dagger:hilt-android:2.48"
     kapt "com.google.dagger:hilt-compiler:2.48"
+
+    implementation "com.facebook.fresco:fresco:2.5.0"
+    implementation "com.facebook.fresco:imagepipeline-okhttp3:2.5.0"
+    implementation('com.facebook.stetho:stetho-okhttp3:1.5.1') {
+        exclude group: 'com.facebook.stetho'
+    }
 }

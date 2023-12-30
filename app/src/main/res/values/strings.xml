@@ -2,4 +2,6 @@
     <string name="app_name">DynamicStringsSample</string>
 
     <string name="test_string">test string</string>
+    <string name="test_1_solo_image">Test 1: Solo Image</string>
+    <string name="test_2_recyclerview_with_images">Test 2: RecyclerView with images</string>
 </resources>
