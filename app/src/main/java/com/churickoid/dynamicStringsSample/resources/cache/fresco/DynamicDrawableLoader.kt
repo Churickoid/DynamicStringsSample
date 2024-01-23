@@ -22,7 +22,7 @@ class DynamicDrawableLoader(
     val frescoHelper: FrescoHelper,
 ) {
 
-    suspend fun getImageByUrl(url: String, context: Context, update: () -> Unit): Bitmap =
+    suspend fun getImageByUrl(url: String, context: Context): Bitmap =
         withContext(Dispatchers.IO) {
             val imageRequest = frescoHelper
                 .newImageRequestBuilderWithSource(Uri.parse(url))
@@ -32,34 +32,41 @@ class DynamicDrawableLoader(
             val dataSource = frescoHelper.imagePipeline
                 .fetchDecodedImage(imageRequest, context)
 
-            if (dataSource.isFinished) {
-                (dataSource.result?.get() as CloseableBitmap).underlyingBitmap.also { update() }
-            } else {
-                suspendCoroutine { continuation ->
-                    dataSource.subscribe(
-                        object : BaseBitmapDataSubscriber() {
+            suspendCoroutine { continuation ->
+                dataSource.subscribe(
+                    object : BaseBitmapDataSubscriber() {
 
-                            override fun onNewResultImpl(bitmap: Bitmap?) {
-                                continuation.resume(bitmap!!.copy(bitmap.config, false))
-                                Log.e("FrescoDrawable", "uploaded")
-                                update()
-                            }
+                        override fun onNewResultImpl(bitmap: Bitmap?) {
+                            continuation.resume(bitmap!!.copy(bitmap.config, false))
+                            Log.e("FrescoDrawable", "uploaded")
+                        }
 
-                            override fun onFailureImpl(dataSource: DataSource<CloseableReference<CloseableImage?>>) {
-                                continuation.resumeWithException(IOException("failed to load thumb url: $url"))
-                                Log.e("FrescoDrawable", "fail")
-                                update()
-                            }
+                        override fun onFailureImpl(dataSource: DataSource<CloseableReference<CloseableImage?>>) {
+                            continuation.resumeWithException(IOException("failed to load thumb url: $url"))
+                            Log.e("FrescoDrawable", "fail")
+                        }
 
-                            override fun onCancellation(dataSource: DataSource<CloseableReference<CloseableImage?>>) {
-                                continuation.resumeWithException(IOException("load thumb cancelled url: $url"))
-                                Log.e("FrescoDrawable", "cancel")
-                                update()
-                            }
-                        },
-                        UiThreadImmediateExecutorService.getInstance()
-                    )
-                }
+                        override fun onCancellation(dataSource: DataSource<CloseableReference<CloseableImage?>>) {
+                            continuation.resumeWithException(IOException("load thumb cancelled url: $url"))
+                            Log.e("FrescoDrawable", "cancel")
+                        }
+                    },
+                    UiThreadImmediateExecutorService.getInstance()
+                )
             }
         }
+
+    fun getImageFromCache(url: String, context: Context): Bitmap? {
+        val imageRequest = frescoHelper
+            .newImageRequestBuilderWithSource(Uri.parse(url))
+            .disableDiskCache()
+            .build()
+
+        val dataSource = frescoHelper.imagePipeline
+            .fetchDecodedImage(imageRequest, context)
+
+        return if (dataSource.isFinished) {
+            (dataSource.result?.get() as CloseableBitmap).underlyingBitmap
+        } else null
+    }
 }

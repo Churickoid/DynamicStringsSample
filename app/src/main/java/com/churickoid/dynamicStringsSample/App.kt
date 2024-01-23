@@ -67,4 +67,5 @@ class App : Application() {
         val resources = super.getResources()
         res.updateConfiguration(resources.configuration, resources.displayMetrics)
     }
+
 }

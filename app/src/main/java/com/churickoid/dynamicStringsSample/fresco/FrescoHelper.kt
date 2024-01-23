@@ -32,7 +32,6 @@ class FrescoHelper(
         val config = ImagePipelineConfig
             .newBuilder(context)
             .setMainDiskCacheConfig(diskCacheConfig)
-            .setDownsampleEnabled(true)
             .setCacheKeyFactory(keyFactory)
             .build()
         Fresco.initialize(context, config)

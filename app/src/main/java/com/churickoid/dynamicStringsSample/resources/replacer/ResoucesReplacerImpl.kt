@@ -29,12 +29,18 @@ class ResourcesReplacerImpl(
     } else {
         null
     }
+
     override fun getDrawable(
         language: LanguageName,
         resourceIdName: ResourceName,
         density: Float,
         defaultDrawableProvider: () -> Drawable,
-    ): Drawable? =
-    resourcesMemcache.getDrawable(language, resourceIdName, getDensityNameByValue(density), defaultDrawableProvider )
+    ): Drawable =
+        resourcesMemcache.getDrawable(
+            language,
+            resourceIdName,
+            getDensityNameByValue(density),
+            defaultDrawableProvider
+        )
 
 }

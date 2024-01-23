@@ -16,6 +16,20 @@
         android:theme="@style/Theme.DynamicStringsSample"
         tools:targetApi="31">
         <activity
+            android:name=".screen.ComposeActivity"
+            android:exported="false"
+            android:label="@string/title_activity_compose"
+            android:theme="@style/Theme.DynamicStringsSample" />
+        <activity
+            android:name=".screen.TestBitmapDrawableActivity"
+            android:exported="false" />
+        <activity
+            android:name=".screen.ImageViewActivity"
+            android:exported="false" />
+        <activity
+            android:name=".screen.ScaleTypeActivity"
+            android:exported="false" />
+        <activity
             android:name=".screen.RecyclerActivity"
             android:exported="false" />
         <activity

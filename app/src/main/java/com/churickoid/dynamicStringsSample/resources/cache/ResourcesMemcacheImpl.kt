@@ -1,7 +1,10 @@
 package ru.mail.cloud.resources.cache
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import androidx.core.graphics.drawable.toBitmap
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
@@ -26,8 +29,9 @@ class ResourcesMemcacheImpl(
     private val pluralsCache: MutableMap<ResourceName, Map<LanguageName, Map<String, String>>> =
         mutableMapOf()
 
-    private val imagesCache: MutableMap<ResourceName, Map<DensityName, String>> =
+    private val urlsCache: MutableMap<ResourceName, Map<DensityName, String>> =
         mutableMapOf()
+
 
     override fun getText(language: LanguageName, resourceName: ResourceName): String? =
         stringsCache.getOrElse(resourceName) { null }?.let {
@@ -50,13 +54,20 @@ class ResourcesMemcacheImpl(
         resourceName: ResourceName,
         densityName: DensityName,
         defaultDrawableProvider: () -> Drawable,
-    ): Drawable? {
-        val url = imagesCache[resourceName]?.let { resource ->
-            resource[densityName]
+    ): Drawable {
+        val resourceUrl = urlsCache[resourceName]?.get(densityName)
+
+        val defaultBitmap = resourceUrl?.let { _ ->
+            getBitmapByDrawable(defaultDrawableProvider.invoke())
         }
-        return url?.let {
-            FrescoDrawable(context,scope, dynamicDrawableLoader, url, defaultDrawableProvider)
+
+        val drawable = defaultBitmap?.let {
+            val newBitmap = dynamicDrawableLoader.getImageFromCache(resourceUrl, context)
+            newBitmap?.let { BitmapDrawable(context.resources, newBitmap) } ?:
+            FrescoDrawable(context, scope, dynamicDrawableLoader, resourceUrl, defaultBitmap)
         }
+        return drawable ?: defaultDrawableProvider.invoke()
+
     }
 
     override fun updateStrings(strings: Map<ResourceName, Map<LanguageName, String>>) {
@@ -78,9 +89,24 @@ class ResourcesMemcacheImpl(
     override fun updateImages(images: Map<ResourceName, Map<DensityName, String>>) {
         supervisorJob.cancelChildren()
         images.forEach { (key, value) ->
-            if (!imagesCache.containsKey(key) || imagesCache[key] != value) {
-                imagesCache[key] = value
+            if (!urlsCache.containsKey(key) || urlsCache[key] != value) {
+                urlsCache[key] = value
             }
         }
     }
+
+    private fun getBitmapByDrawable(drawable: Drawable): Bitmap? =
+        when (drawable) {
+            is BitmapDrawable -> {
+                drawable.bitmap
+            }
+
+            else -> {
+                drawable.toBitmap(
+                    drawable.intrinsicWidth,
+                    drawable.intrinsicHeight
+                )
+            }
+        }
+
 }

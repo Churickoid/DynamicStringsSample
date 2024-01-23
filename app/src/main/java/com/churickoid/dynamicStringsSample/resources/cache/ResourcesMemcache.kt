@@ -19,5 +19,5 @@ interface ResourcesMemcache {
         resourceName: ResourceName,
         densityName: DensityName,
         defaultDrawableProvider: () -> Drawable,
-    ): Drawable?
+    ): Drawable
 }

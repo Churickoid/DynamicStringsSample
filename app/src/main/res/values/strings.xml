@@ -4,4 +4,8 @@
     <string name="test_string">test string</string>
     <string name="test_1_solo_image">Test 1: Solo Image</string>
     <string name="test_2_recyclerview_with_images">Test 2: RecyclerView with images</string>
+    <string name="test_3_scale_types">Test 3: Scale types</string>
+    <string name="test_4_imageview_params">Test 4: ImageView params</string>
+    <string name="title_activity_compose">ComposeActivity</string>
+    <string name="test_5_compose">Test 5: Compose</string>
 </resources>

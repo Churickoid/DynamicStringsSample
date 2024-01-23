@@ -30,7 +30,6 @@ data class PluralsJsonResources(
 @Serializable
 data class DrawableJsonResources(
     val enabled: Boolean,
-    val subtype: String,
     val name: String,
     val replacements: List<DrawableJsonReplacement>,
 )

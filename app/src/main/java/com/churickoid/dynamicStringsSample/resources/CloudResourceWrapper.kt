@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable
 import android.icu.text.PluralRules
 import android.os.Build
 import android.util.DisplayMetrics
+import android.util.TypedValue
 import com.churickoid.dynamicStringsSample.RemoteParams
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -108,7 +109,7 @@ class CloudResourceWrapper(
             ResourceName(getResourceName(id)),
             displayMetrics.density
         ) { super.getDrawable(id, theme) }
-        return drawable ?: super.getDrawable(id, theme)
+        return drawable
     }
 
     override fun updateConfiguration(config: Configuration?, metrics: DisplayMetrics?) {

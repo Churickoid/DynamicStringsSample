@@ -20,5 +20,5 @@ interface ResourcesReplacer {
         resourceIdName: ResourceName,
         density: Float,
         defaultDrawableProvider: () -> Drawable,
-    ): Drawable?
+    ): Drawable
 }

@@ -1,5 +1,6 @@
 package ru.mail.cloud.resources.cache.initializer
 
+import android.util.Log
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.polymorphic
@@ -70,6 +71,7 @@ class JsonResourcesParser(private val udpateCache: UpdateResourcesMemcache) {
                 }
                 .also(udpateCache::updateImages)
         } catch (e: Throwable) {
+            Log.e("aaaa", e.toString())
 
         }
     }
