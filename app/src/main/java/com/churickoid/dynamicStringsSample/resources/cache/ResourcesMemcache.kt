@@ -15,7 +15,6 @@ interface ResourcesMemcache {
     ): String?
 
     fun getDrawable(
-        language: LanguageName,
         resourceName: ResourceName,
         densityName: DensityName,
         defaultDrawableProvider: () -> Drawable,

@@ -12,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import ru.mail.cloud.resources.analytics.ResourcesAnalytics
 import ru.mail.cloud.resources.cache.initializer.JsonResourcesParser
+import ru.mail.cloud.resources.models.DensityName
 import ru.mail.cloud.resources.models.LanguageName
 import ru.mail.cloud.resources.models.ResourceName
 import ru.mail.cloud.resources.replacer.ResourcesReplacer
@@ -105,9 +106,8 @@ class CloudResourceWrapper(
 
     override fun getDrawable(id: Int, theme: Theme?): Drawable {
         val drawable = replacer.getDrawable(
-            language,
             ResourceName(getResourceName(id)),
-            displayMetrics.density
+            DensityName.getDensityNameByValue(displayMetrics.density)
         ) { super.getDrawable(id, theme) }
         return drawable
     }

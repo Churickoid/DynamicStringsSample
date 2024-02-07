@@ -16,6 +16,8 @@ class MainActivity : BaseActivity() {
         val button3 = findViewById<Button>(R.id.button3)
         val button4 = findViewById<Button>(R.id.button4)
         val button5 = findViewById<Button>(R.id.button5)
+        val button6 = findViewById<Button>(R.id.button6)
+        val button7 = findViewById<Button>(R.id.button7)
         val button10 = findViewById<Button>(R.id.button10)
         button1.setOnClickListener {
             val intent = Intent(this@MainActivity, SingleImageActivity::class.java)
@@ -38,6 +40,16 @@ class MainActivity : BaseActivity() {
 
         button5.setOnClickListener {
             val intent = Intent(this@MainActivity, ComposeActivity::class.java)
+            startActivity(intent)
+        }
+
+        button6.setOnClickListener {
+            val intent = Intent(this@MainActivity, BackgroundViewActivity::class.java)
+            startActivity(intent)
+        }
+
+        button7.setOnClickListener {
+            val intent = Intent(this@MainActivity, FragmentActivity::class.java)
             startActivity(intent)
         }
 

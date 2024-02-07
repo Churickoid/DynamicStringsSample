@@ -2,10 +2,7 @@ package ru.mail.cloud.resources.cache.fresco
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BlendMode
 import android.graphics.Canvas
-import android.graphics.ColorFilter
-import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.view.Gravity
@@ -18,24 +15,34 @@ class FrescoDrawable(
     private val context: Context,
     scope: CoroutineScope,
     loader: DynamicDrawableLoader,
-    url: String,
     defaultBitmap: Bitmap,
+    url: String,
 ) : BitmapDrawable(context.resources, defaultBitmap) {
 
     private val _remoteBitmapAtomic = AtomicReference<Bitmap>()
-    private val remoteBitmap: Bitmap?
+    private var remoteBitmap: Bitmap?
         get() = _remoteBitmapAtomic.get()
+        set(value) = _remoteBitmapAtomic.set(value)
 
     private var mRectAndInsetsDirty = true
     private val mRect = Rect()
 
+    val currentBitmap: Bitmap
+        get() = remoteBitmap ?: bitmap
+
     init {
-        scope.launch {
-            try {
-                _remoteBitmapAtomic.set(loader.getImageByUrl(url, context))
-                invalidateSelf()
-            } catch (e: IOException) {
-                _remoteBitmapAtomic.set(null)
+        val cashedBitmap = loader.getImageFromCache(url, context)
+        if (cashedBitmap != null) {
+            remoteBitmap = cashedBitmap
+            invalidateSelf()
+        } else {
+            scope.launch {
+                try {
+                    remoteBitmap = loader.getImageByUrl(url, context)
+                    invalidateSelf()
+                } catch (e: IOException) {
+                    remoteBitmap = null
+                }
             }
         }
     }
@@ -45,12 +52,8 @@ class FrescoDrawable(
             return
         }
         updateRectAndInsetsIfDirty()
-        if (remoteBitmap != null) {
-            canvas.drawBitmap(remoteBitmap!!, null, mRect, paint)
-        } else {
-            canvas.drawBitmap(bitmap, null, mRect, paint)
-        }
-
+        remoteBitmap?.let { canvas.drawBitmap(remoteBitmap!!, null, mRect, paint) }
+            ?: canvas.drawBitmap(bitmap, null, mRect, paint)
     }
 
     private fun updateRectAndInsetsIfDirty() {
@@ -75,7 +78,6 @@ class FrescoDrawable(
         super.onBoundsChange(bounds)
         mRectAndInsetsDirty = true
     }
-
 
     companion object {
         private const val TAG = "FrescoDrawable"

@@ -2,6 +2,7 @@ package ru.mail.cloud.resources.replacer
 
 import android.graphics.drawable.Drawable
 import android.icu.text.PluralRules
+import ru.mail.cloud.resources.models.DensityName
 import ru.mail.cloud.resources.models.LanguageName
 import ru.mail.cloud.resources.models.ResourceName
 
@@ -16,9 +17,8 @@ interface ResourcesReplacer {
     ): String?
 
     fun getDrawable(
-        language: LanguageName,
         resourceIdName: ResourceName,
-        density: Float,
+        densityName: DensityName,
         defaultDrawableProvider: () -> Drawable,
     ): Drawable
 }

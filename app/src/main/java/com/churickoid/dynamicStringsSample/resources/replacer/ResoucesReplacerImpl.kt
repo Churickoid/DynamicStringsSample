@@ -4,6 +4,7 @@ import android.graphics.drawable.Drawable
 import android.icu.text.PluralRules
 import android.os.Build
 import ru.mail.cloud.resources.cache.ResourcesMemcache
+import ru.mail.cloud.resources.models.DensityName
 import ru.mail.cloud.resources.models.DensityName.Companion.getDensityNameByValue
 import ru.mail.cloud.resources.models.LanguageName
 import ru.mail.cloud.resources.models.ResourceName
@@ -29,17 +30,14 @@ class ResourcesReplacerImpl(
     } else {
         null
     }
-
     override fun getDrawable(
-        language: LanguageName,
         resourceIdName: ResourceName,
-        density: Float,
+        densityName: DensityName,
         defaultDrawableProvider: () -> Drawable,
     ): Drawable =
         resourcesMemcache.getDrawable(
-            language,
             resourceIdName,
-            getDensityNameByValue(density),
+            densityName,
             defaultDrawableProvider
         )
 

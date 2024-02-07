@@ -32,7 +32,6 @@ class ResourcesMemcacheImpl(
     private val urlsCache: MutableMap<ResourceName, Map<DensityName, String>> =
         mutableMapOf()
 
-
     override fun getText(language: LanguageName, resourceName: ResourceName): String? =
         stringsCache.getOrElse(resourceName) { null }?.let {
             it.getOrElse(language) { null }
@@ -50,7 +49,6 @@ class ResourcesMemcacheImpl(
         }
 
     override fun getDrawable(
-        language: LanguageName,
         resourceName: ResourceName,
         densityName: DensityName,
         defaultDrawableProvider: () -> Drawable,
@@ -62,12 +60,9 @@ class ResourcesMemcacheImpl(
         }
 
         val drawable = defaultBitmap?.let {
-            val newBitmap = dynamicDrawableLoader.getImageFromCache(resourceUrl, context)
-            newBitmap?.let { BitmapDrawable(context.resources, newBitmap) } ?:
-            FrescoDrawable(context, scope, dynamicDrawableLoader, resourceUrl, defaultBitmap)
+            FrescoDrawable(context, scope, dynamicDrawableLoader, defaultBitmap, resourceUrl)
         }
         return drawable ?: defaultDrawableProvider.invoke()
-
     }
 
     override fun updateStrings(strings: Map<ResourceName, Map<LanguageName, String>>) {
@@ -108,5 +103,4 @@ class ResourcesMemcacheImpl(
                 )
             }
         }
-
 }

@@ -11,6 +11,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import ru.mail.cloud.resources.cache.fresco.DynamicDrawableLoader
+import ru.mail.cloud.resources.cache.fresco.DynamicDrawableLoaderImpl
 import javax.inject.Singleton
 
 @Module
@@ -39,7 +40,7 @@ class FrescoModule {
     fun providesDynamicDrawableLoader(
         frescoHelperProvider: FrescoHelper,
     ): DynamicDrawableLoader =
-        DynamicDrawableLoader(
+        DynamicDrawableLoaderImpl(
             frescoHelperProvider
         )
 
